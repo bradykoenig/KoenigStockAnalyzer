@@ -13,7 +13,7 @@ document.getElementById('analyzeButton').addEventListener('click', async () => {
   resultDiv.innerText = 'Fetching data...';
 
   try {
-    // Fetch stock data from Yahoo Finance
+    // Fetch stock data from Yahoo Finance via proxy
     const response = await fetch(`${API_URL}${ticker}?interval=1d&range=6mo`);
     const data = await response.json();
 
