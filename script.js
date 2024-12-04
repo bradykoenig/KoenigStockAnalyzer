@@ -1,5 +1,5 @@
 const API_URL = "https://www.alphavantage.co/query";
-const API_KEY = "3D6J8YQ1M2PRSLBF";
+const API_KEY = "YOUR_API_KEY"; // Replace with your Alpha Vantage API key
 
 document.getElementById('analyzeButton').addEventListener('click', async () => {
   const ticker = document.getElementById('ticker').value.trim();
@@ -58,4 +58,9 @@ document.getElementById('analyzeButton').addEventListener('click', async () => {
   } catch (error) {
     resultDiv.innerText = `Error fetching data: ${error.message}`;
   }
+});
+
+// Redirect to trade.koenignetwork.com
+document.getElementById('tradeButton').addEventListener('click', () => {
+  window.location.href = "https://trade.koenignetwork.com";
 });
