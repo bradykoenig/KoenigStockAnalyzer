@@ -1,4 +1,4 @@
-const API_URL = "https://query1.finance.yahoo.com/v8/finance/chart/";
+const API_URL = "https://cors-anywhere.herokuapp.com/https://query1.finance.yahoo.com/v8/finance/chart/";
 
 document.getElementById('analyzeButton').addEventListener('click', async () => {
   const ticker = document.getElementById('ticker').value.trim();
