@@ -1,8 +1,6 @@
 const API_URL = "https://www.alphavantage.co/query";
 const API_KEY = "3D6J8YQ1M2PRSLBF"; // Replace with your Alpha Vantage API key
 
-let chartInstance = null; // Store the current chart instance
-
 document.getElementById('analyzeButton').addEventListener('click', async () => {
   const ticker = document.getElementById('ticker').value.trim();
   const resultDiv = document.getElementById('result');
@@ -32,13 +30,8 @@ document.getElementById('analyzeButton').addEventListener('click', async () => {
 
     resultDiv.innerHTML = `<p>Showing data for: <strong>${ticker.toUpperCase()}</strong></p>`;
 
-    // Destroy the existing chart instance if it exists
-    if (chartInstance) {
-      chartInstance.destroy();
-    }
-
-    // Create a new chart
-    chartInstance = new Chart(chartCanvas, {
+    // Render chart
+    new Chart(chartCanvas, {
       type: 'line',
       data: {
         labels: labels,
@@ -65,4 +58,9 @@ document.getElementById('analyzeButton').addEventListener('click', async () => {
   } catch (error) {
     resultDiv.innerText = `Error fetching data: ${error.message}`;
   }
+});
+
+// Redirect to trade.koenignetwork.com
+document.getElementById('tradeButton').addEventListener('click', () => {
+  window.location.href = "https://trade.koenignetwork.com";
 });
