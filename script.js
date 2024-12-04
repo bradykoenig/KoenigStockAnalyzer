@@ -8,9 +8,9 @@ document.getElementById('analyzeButton').addEventListener('click', async () => {
       return;
     }
   
-    // Fetch stock data from API
+    // Fetch stock data from the API on analyze.koenignetwork.com
     try {
-      const response = await fetch(`https://api.example.com/analyze?ticker=${ticker}`);
+      const response = await fetch(`/analyze?ticker=${ticker}`);
       const data = await response.json();
   
       if (data.error) {
