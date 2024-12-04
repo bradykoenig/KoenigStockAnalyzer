@@ -1,4 +1,5 @@
-const API_URL = "https://cors-anywhere.herokuapp.com/https://query1.finance.yahoo.com/v8/finance/chart/";
+const API_URL = "https://www.alphavantage.co/query";
+const API_KEY = "3D6J8YQ1M2PRSLBF";
 
 document.getElementById('analyzeButton').addEventListener('click', async () => {
   const ticker = document.getElementById('ticker').value.trim();
@@ -13,18 +14,19 @@ document.getElementById('analyzeButton').addEventListener('click', async () => {
   resultDiv.innerText = 'Fetching data...';
 
   try {
-    // Fetch stock data from Yahoo Finance via proxy
-    const response = await fetch(`${API_URL}${ticker}?interval=1d&range=6mo`);
+    // Fetch stock data from Alpha Vantage
+    const response = await fetch(`${API_URL}?function=TIME_SERIES_DAILY&symbol=${ticker}&apikey=${API_KEY}`);
     const data = await response.json();
 
-    if (!data.chart || !data.chart.result) {
+    if (!data["Time Series (Daily)"]) {
       resultDiv.innerText = 'Error fetching stock data. Please try again.';
       return;
     }
 
-    const results = data.chart.result[0];
-    const timestamps = results.timestamp.map(ts => new Date(ts * 1000).toLocaleDateString());
-    const closePrices = results.indicators.quote[0].close;
+    // Extract and format data
+    const timeSeries = data["Time Series (Daily)"];
+    const labels = Object.keys(timeSeries).slice(0, 30).reverse(); // Get the last 30 days
+    const closePrices = labels.map(date => parseFloat(timeSeries[date]["4. close"]));
 
     resultDiv.innerHTML = `<p>Showing data for: <strong>${ticker.toUpperCase()}</strong></p>`;
 
@@ -32,7 +34,7 @@ document.getElementById('analyzeButton').addEventListener('click', async () => {
     new Chart(chartCanvas, {
       type: 'line',
       data: {
-        labels: timestamps,
+        labels: labels,
         datasets: [{
           label: 'Close Price',
           data: closePrices,
