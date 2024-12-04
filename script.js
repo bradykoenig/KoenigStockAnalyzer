@@ -1,5 +1,7 @@
-const API_URL = "https://www.alphavantage.co/query";
-const API_KEY = "3D6J8YQ1M2PRSLBF"; // Replace with your Alpha Vantage API key
+const API_URL = "https://finnhub.io/api/v1/quote";
+const API_KEY = "ct8c1v1r01qtkv5s2bhgct8c1v1r01qtkv5s2bi0";
+
+let chartInstance = null; // Store the current chart instance
 
 document.getElementById('analyzeButton').addEventListener('click', async () => {
   const ticker = document.getElementById('ticker').value.trim();
@@ -14,53 +16,55 @@ document.getElementById('analyzeButton').addEventListener('click', async () => {
   resultDiv.innerText = 'Fetching data...';
 
   try {
-    // Fetch stock data from Alpha Vantage
-    const response = await fetch(`${API_URL}?function=TIME_SERIES_DAILY&symbol=${ticker}&apikey=${API_KEY}`);
+    // Fetch stock data from Finnhub
+    const response = await fetch(`${API_URL}?symbol=${ticker}&token=${API_KEY}`);
     const data = await response.json();
 
-    if (!data["Time Series (Daily)"]) {
+    // Handle API errors or missing data
+    if (!data || !data.c) {
       resultDiv.innerText = 'Error fetching stock data. Please try again.';
       return;
     }
 
-    // Extract and format data
-    const timeSeries = data["Time Series (Daily)"];
-    const labels = Object.keys(timeSeries).slice(0, 30).reverse(); // Get the last 30 days
-    const closePrices = labels.map(date => parseFloat(timeSeries[date]["4. close"]));
+    // Extract and format data for chart (Finnhub provides current, high, low, open, and close data)
+    const prices = [
+      data.o, // Open
+      data.h, // High
+      data.l, // Low
+      data.c  // Current (Close)
+    ];
+    const labels = ["Open", "High", "Low", "Close"];
 
     resultDiv.innerHTML = `<p>Showing data for: <strong>${ticker.toUpperCase()}</strong></p>`;
 
-    // Render chart
-    new Chart(chartCanvas, {
-      type: 'line',
+    // Destroy the existing chart instance if it exists
+    if (chartInstance) {
+      chartInstance.destroy();
+    }
+
+    // Create a new chart
+    chartInstance = new Chart(chartCanvas, {
+      type: 'bar',
       data: {
         labels: labels,
         datasets: [{
-          label: 'Close Price',
-          data: closePrices,
-          borderColor: '#007bff',
-          backgroundColor: 'rgba(0, 123, 255, 0.1)',
-          borderWidth: 2,
-          fill: true,
+          label: 'Price',
+          data: prices,
+          backgroundColor: ['#007bff', '#28a745', '#ffc107', '#dc3545'],
+          borderWidth: 1,
         }]
       },
       options: {
         responsive: true,
         plugins: {
-          legend: { display: true },
+          legend: { display: false },
         },
         scales: {
-          x: { title: { display: true, text: 'Date' } },
-          y: { title: { display: true, text: 'Price' } }
+          y: { title: { display: true, text: 'Price (USD)' }, beginAtZero: true }
         }
       }
     });
   } catch (error) {
     resultDiv.innerText = `Error fetching data: ${error.message}`;
   }
-});
-
-// Redirect to trade.koenignetwork.com
-document.getElementById('tradeButton').addEventListener('click', () => {
-  window.location.href = "https://trade.koenignetwork.com";
 });
