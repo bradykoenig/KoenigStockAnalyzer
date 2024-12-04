@@ -1,5 +1,5 @@
 const API_URL = "https://www.alphavantage.co/query";
-const API_KEY = "YOUR_API_KEY"; // Replace with your Alpha Vantage API key
+const API_KEY = "3D6J8YQ1M2PRSLBF"; // Replace with your Alpha Vantage API key
 
 document.getElementById('analyzeButton').addEventListener('click', async () => {
   const ticker = document.getElementById('ticker').value.trim();
